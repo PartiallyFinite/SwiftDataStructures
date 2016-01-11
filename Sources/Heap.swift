@@ -45,7 +45,8 @@ public struct _Heap<Container : MutableCollectionType where Container.Index : Ra
         let range = range ?? cont.startIndex ..< cont.endIndex
         self.range = range
         self.before = before
-        
+
+        // fix the upper half of the heap (the lower half does not have children, so is already correctly ordered)
         for i in (range.startIndex ..< range.startIndex.advancedBy(range.count / 2)).reverse() {
             fix(&cont, index: i)
         }
@@ -57,10 +58,13 @@ public struct _Heap<Container : MutableCollectionType where Container.Index : Ra
         let l = i + startIndex.distanceTo(i) + 1
         let r = l + 1
         var mi: Index
+        // if l exists and sorts before i
         if l < endIndex && before(cont[l], cont[i]) { mi = l }
         else { mi = i }
+        // if r exists and sorts before the greatest of i and l (mi)
         if r < endIndex && before(cont[r], cont[mi]) { mi = r }
 
+        // if something needs to change, swap and fix
         if mi != i {
             swap(&cont[i], &cont[mi])
             fix(&cont, index: mi)
@@ -75,7 +79,9 @@ public struct _Heap<Container : MutableCollectionType where Container.Index : Ra
         precondition(range.count > 0, "Cannot pop from empty heap.")
         range.endIndex -= 1
         if range.count > 0 {
+            // swap the popped (first) element with the one that just went out of range
             swap(&cont[range.startIndex], &cont[range.endIndex])
+            // fix the heap from the top to correct the ordering
             fix(&cont, index: startIndex)
         }
         return cont[range.endIndex]
@@ -88,8 +94,10 @@ public struct _Heap<Container : MutableCollectionType where Container.Index : Ra
             cont[i] = value
         }
         func parent(i: Index) -> Index {
+            // floor(i - 1) / 2
             return startIndex.advancedBy((startIndex.distanceTo(i) - 1) / 2)
         }
+        // repeatedly swap the new node upwards until it no longer sorts before its parent
         var i = i
         while i > startIndex && before(cont[i], cont[parent(i)]) {
             swap(&cont[parent(i)], &cont[i])
@@ -98,6 +106,7 @@ public struct _Heap<Container : MutableCollectionType where Container.Index : Ra
     }
 
     private mutating func expand(inout cont: Container) {
+        // expand the range to include the new element and run value update
         range.endIndex += 1
         update(&cont, atIndex: endIndex - 1)
     }

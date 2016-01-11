@@ -33,6 +33,7 @@ public final class _PriorityQueueImpl<Container : MutableCollectionType where Co
     private var container = Container()
     private var heap: _Heap<Container>
 
+    /// - Complexity: O(`seq.count`)
     public init<S : SequenceType where S.Generator.Element == Element>(_ seq: S, comparator before: (Element, Element) -> Bool) {
         container.appendContentsOf(seq)
         heap = container._makeHeapIn(container.startIndex ..< container.endIndex, comparator: before)
@@ -42,6 +43,7 @@ public final class _PriorityQueueImpl<Container : MutableCollectionType where Co
         self.init(EmptyCollection<Element>(), comparator: before)
     }
 
+    /// - Complexity: O(`other.container.count`)
     public init(_ other: _PriorityQueueImpl<Container>) {
         container.appendContentsOf(other.container)
         heap = other.heap
@@ -51,15 +53,18 @@ public final class _PriorityQueueImpl<Container : MutableCollectionType where Co
         return container.count
     }
 
+    /// - Complexity: O(log `count`)
     public func insert(v: Element) {
         container.append(v)
         container._heapExpand(&heap)
     }
 
+    /// - Complexity: O(1)
     public var top: Element? {
         return container._heapTop(&heap)
     }
 
+    /// - Complexity: O(log `count`)
     public func removeTop() -> Element {
         let top = container._popHeap(&heap)
         container.removeLast()
@@ -81,6 +86,7 @@ public struct PriorityQueue<Element : Comparable> {
 
     /// Construct a priority queue containing the items in `seq`.
     /// A max-priority queue is constructed unless `max` is specified as `false`.
+    /// - Complexity: O(`seq.count`)
     public init<S : SequenceType where S.Generator.Element == Element>(_ seq: S, max: Bool = true) {
         impl = _PriorityQueueImpl(seq, comparator: max ? (>) : (<))
     }
@@ -97,24 +103,28 @@ public struct PriorityQueue<Element : Comparable> {
     }
 
     /// Insert `v` into the queue.
+    /// - Complexity: O(log `count`)
     public mutating func insert(v: Element) {
         ensureUnique()
         impl.insert(v)
     }
 
     /// The top of the queue, or `nil` if the queue is empty.
+    /// - Complexity: O(1)
     public var top: Element? {
         return impl.top
     }
 
     /// Remove and return the top element of the queue.
     /// - Precondition: `count > 0`
+    /// - Complexity: O(log `count`)
     public mutating func remove() -> Element {
         ensureUnique()
         return impl.removeTop()
     }
 
     /// Remove and return the top element of the queue, or return `nil` if the queue is empty.
+    /// - Complexity: O(log `count`)
     public mutating func pop() -> Element? {
         return count > 0 ? remove() : nil
     }

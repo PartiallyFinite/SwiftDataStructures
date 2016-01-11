@@ -41,8 +41,6 @@ public struct _Heap<Container : MutableCollectionType where Container.Index : Ra
     /// `range.count`
     public var count: Index.Distance { return range.count }
 
-    private var needsFix = false
-
     private init(inout container cont: Container, range: Range<Index>? = nil, comparator before: (Element, Element) -> Bool) {
         let range = range ?? cont.startIndex ..< cont.endIndex
         self.range = range
@@ -51,12 +49,6 @@ public struct _Heap<Container : MutableCollectionType where Container.Index : Ra
         for i in (range.startIndex ..< range.startIndex.advancedBy(range.count / 2)).reverse() {
             fix(&cont, index: i)
         }
-    }
-
-    private mutating func _fixIfNeeded(inout cont: Container) {
-        guard needsFix else { return }
-        needsFix = false
-        fix(&cont, index: startIndex)
     }
 
     private mutating func fix(inout cont: Container, index i: Index) {
@@ -73,29 +65,24 @@ public struct _Heap<Container : MutableCollectionType where Container.Index : Ra
             swap(&cont[i], &cont[mi])
             fix(&cont, index: mi)
         }
-
-        _fixIfNeeded(&cont)
     }
 
     private mutating func top(inout cont: Container) -> Element? {
-        _fixIfNeeded(&cont)
         return range.count > 0 ? cont[startIndex] : nil
     }
 
     private mutating func pop(inout cont: Container) -> Element {
         precondition(range.count > 0, "Cannot pop from empty heap.")
-        _fixIfNeeded(&cont)
-        if range.count > 1 {
-            swap(&cont[range.startIndex], &cont[range.endIndex-1])
-            needsFix = true
-        }
         range.endIndex -= 1
+        if range.count > 0 {
+            swap(&cont[range.startIndex], &cont[range.endIndex])
+            fix(&cont, index: startIndex)
+        }
         return cont[range.endIndex]
     }
 
     private mutating func update(inout cont: Container, value: Element? = nil, atIndex i: Index) {
         precondition(range ~= i, "Index \(i) outside of heap range \(range).")
-        _fixIfNeeded(&cont)
         if let value = value {
             precondition(!before(cont[i], value), "New value must sort equal or before previous value.")
             cont[i] = value
@@ -111,7 +98,6 @@ public struct _Heap<Container : MutableCollectionType where Container.Index : Ra
     }
 
     private mutating func expand(inout cont: Container) {
-        _fixIfNeeded(&cont)
         range.endIndex += 1
         update(&cont, atIndex: endIndex - 1)
     }
@@ -137,14 +123,14 @@ extension MutableCollectionType where Index : RandomAccessIndexType, Index.Dista
     }
 
     /// Return the top of `heap`, or `nil` if the heap is empty.
-    /// - Complexity: Amortised O(1)
+    /// - Complexity: O(1)
     @warn_unused_result
     public mutating func _heapTop(inout heap: _Heap<Self>) -> Generator.Element? {
         return heap.top(&self)
     }
 
     /// Remove and return the top of `heap`, leaving the popped element at position `heap.endIndex` (after this function returns). The count of `self` is unchanged.
-    /// - Complexity: At most O(log `heap.count`).
+    /// - Complexity: O(log `heap.count`).
     public mutating func _popHeap(inout heap: _Heap<Self>) -> Generator.Element {
         return heap.pop(&self)
     }

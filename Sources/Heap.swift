@@ -52,6 +52,10 @@ public struct _Heap<Container : MutableCollectionType where Container.Index : Ra
         }
     }
 
+    /// Make a valid binary heap rooted at `i`.
+    /// - Precondition: `i * 2 + 1` and `i * 2 + 2` are roots of valid binary heaps.
+    /// - Postcondition: `i` is the root of a valid binary heap.
+    /// - Complexity: O(log(`count`))
     private mutating func fix(inout cont: Container, index i: Index) {
         precondition(range ~= i, "Heap range \(range) does not contain index \(i).")
 
@@ -121,14 +125,6 @@ extension MutableCollectionType where Index : RandomAccessIndexType, Index.Dista
     @warn_unused_result
     public mutating func _makeHeapIn(range: Range<Index>, comparator before: (Generator.Element, Generator.Element) -> Bool) -> _Heap<Self> {
         return _Heap(container: &self, range: range, comparator: before)
-    }
-
-    /// Make a valid binary heap rooted at `i`.
-    /// - Precondition: `i * 2 + 1` and `i * 2 + 2` are roots of valid binary heaps.
-    /// - Postcondition: `i` is the root of a valid binary heap.
-    /// - Complexity: O(log(`heap.count`))
-    public mutating func _fixHeap(inout heap: _Heap<Self>, index i: Index) {
-        heap.fix(&self, index: i)
     }
 
     /// Return the top of `heap`, or `nil` if the heap is empty.

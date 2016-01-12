@@ -17,6 +17,8 @@
 		37D322121C43572900E2245F /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322101C43572900E2245F /* Heap.swift */; };
 		37D322141C439F2600E2245F /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322131C439F2600E2245F /* PriorityQueue.swift */; };
 		37D322151C439F2600E2245F /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322131C439F2600E2245F /* PriorityQueue.swift */; };
+		37D322171C43E6AF00E2245F /* RedBlackTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322161C43E6AF00E2245F /* RedBlackTree.swift */; };
+		37D322181C43E6AF00E2245F /* RedBlackTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322161C43E6AF00E2245F /* RedBlackTree.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,15 +42,16 @@
 		377C0C201C39055800B1840F /* SwiftDataStructures.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftDataStructures.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		377C0C231C39055800B1840F /* SwiftDataStructures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftDataStructures.h; sourceTree = "<group>"; };
 		377C0C251C39055800B1840F /* Info-Mac.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Mac.plist"; sourceTree = "<group>"; };
-		377C0C2A1C39055800B1840F /* UniversalFrameworkTests-Mac.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "UniversalFrameworkTests-Mac.xctest"; path = "SwiftDataStructuresTests-Mac.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		377C0C2A1C39055800B1840F /* SwiftDataStructuresTests-Mac.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftDataStructuresTests-Mac.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		377C0C2F1C39055800B1840F /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		377C0C3F1C39068300B1840F /* SwiftDataStructures.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftDataStructures.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		377C0C481C39068300B1840F /* UniversalFrameworkTests-Mac.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "UniversalFrameworkTests-Mac.xctest"; path = "SwiftDataStructuresTests-Mac.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		377C0C481C39068300B1840F /* SwiftDataStructuresTests-Mac.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftDataStructuresTests-Mac.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		377C0C561C3906E800B1840F /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		377C0C571C3906E800B1840F /* Info-Mac.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Mac.plist"; sourceTree = "<group>"; };
 		377C0C581C3906F400B1840F /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		37D322101C43572900E2245F /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
 		37D322131C439F2600E2245F /* PriorityQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PriorityQueue.swift; sourceTree = "<group>"; };
+		37D322161C43E6AF00E2245F /* RedBlackTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedBlackTree.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,9 +101,9 @@
 			isa = PBXGroup;
 			children = (
 				377C0C201C39055800B1840F /* SwiftDataStructures.framework */,
-				377C0C2A1C39055800B1840F /* UniversalFrameworkTests-Mac.xctest */,
+				377C0C2A1C39055800B1840F /* SwiftDataStructuresTests-Mac.xctest */,
 				377C0C3F1C39068300B1840F /* SwiftDataStructures.framework */,
-				377C0C481C39068300B1840F /* UniversalFrameworkTests-Mac.xctest */,
+				377C0C481C39068300B1840F /* SwiftDataStructuresTests-Mac.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -113,6 +116,7 @@
 				377C0C581C3906F400B1840F /* Info-iOS.plist */,
 				37D322101C43572900E2245F /* Heap.swift */,
 				37D322131C439F2600E2245F /* PriorityQueue.swift */,
+				37D322161C43E6AF00E2245F /* RedBlackTree.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -182,7 +186,7 @@
 			);
 			name = "Tests-Mac";
 			productName = UniversalFrameworkTests;
-			productReference = 377C0C2A1C39055800B1840F /* UniversalFrameworkTests-Mac.xctest */;
+			productReference = 377C0C2A1C39055800B1840F /* SwiftDataStructuresTests-Mac.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		377C0C3E1C39068300B1840F /* iOS */ = {
@@ -218,7 +222,7 @@
 			);
 			name = "Tests-iOS";
 			productName = iOSTests;
-			productReference = 377C0C481C39068300B1840F /* UniversalFrameworkTests-Mac.xctest */;
+			productReference = 377C0C481C39068300B1840F /* SwiftDataStructuresTests-Mac.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -303,6 +307,7 @@
 			files = (
 				37D322111C43572900E2245F /* Heap.swift in Sources */,
 				37D322141C439F2600E2245F /* PriorityQueue.swift in Sources */,
+				37D322171C43E6AF00E2245F /* RedBlackTree.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -320,6 +325,7 @@
 			files = (
 				37D322121C43572900E2245F /* Heap.swift in Sources */,
 				37D322151C439F2600E2245F /* PriorityQueue.swift in Sources */,
+				37D322181C43E6AF00E2245F /* RedBlackTree.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

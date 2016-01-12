@@ -74,4 +74,25 @@ class SwiftDataStructuresTests: XCTestCase {
         XCTAssertEqual(q.remove(), -9)
     }
 
+    func testRedBlackTree() {
+        let nums = [5, 7, 1, -8, 3, 7, -2, 8, -9, 1, 21, 25, -56, 2, 5, 7, 5, 7, 5, 3, 2, 1, -2, -2, -2, -2, -2, -56, 25, 21, 25, -56, 7, 7, 7, 7, 1]
+        var t = _RedBlackTree<Int>()
+        XCTAssertEqual(t.first, nil)
+        XCTAssertEqual(t.startIndex, t.endIndex)
+        for i in nums {
+            t.insert(i)
+        }
+        XCTAssert(t.elementsEqual(nums.sort()))
+        XCTAssertEqual(t[t.indexOf(3)!], 3)
+        XCTAssertEqual(t.indexOf(6), nil)
+        XCTAssertEqual(t[t.lowerBound(-5)], -2)
+        XCTAssertEqual(t[t.lowerBound(7)], 7)
+        XCTAssertEqual(t[t.upperBound(3)], 5)
+        XCTAssertEqual(t[t.upperBound(-8)], -2)
+        XCTAssertEqual(t.upperBound(25), t.endIndex)
+        XCTAssertEqual(t.lowerBound(26), t.endIndex)
+        XCTAssertEqual(t.minElement(), -56)
+        XCTAssertEqual(t.maxElement(), 25)
+    }
+
 }

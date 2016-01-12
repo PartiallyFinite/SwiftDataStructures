@@ -169,12 +169,15 @@ public struct _RedBlackTree<Key : Comparable> {
 
     public private(set) var count = 0
 
+    /// Copy-on-write optimisation.
+    /// - Complexity: Expected O(1), O(`count`) if the structure was copied and modified.
     private mutating func ensureUnique() {
-        if root != nil && !isUniquelyReferenced(&root!) {
+        if _slowPath(root != nil && !isUniquelyReferenced(&root!)) {
             root = _RedBlackTreeNode(deepCopy: root!, setParent: nil)
         }
     }
 
+    /// - Complexity: O(log `count`)
     public mutating func insert(k: Key) -> Index {
         ensureUnique()
 

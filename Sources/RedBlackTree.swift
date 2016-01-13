@@ -238,6 +238,14 @@ public struct _RedBlackTree<Key : Comparable> {
         uuid = _nextTreeID()
     }
 
+    // TODO: initialiser that takes a sorted sequence and constructs a tree in O(n) time
+    
+    /// - Complexity: O(n log n), where n = `seq.count`.
+    public init<S : SequenceType where S.Generator.Element == Key>(_ seq: S) {
+        self.init()
+        for k in seq { insert(k) }
+    }
+
     private func loopSentinel() {
         assert(sentinel.isSentinel)
         assert(!sentinel.red)
@@ -333,6 +341,7 @@ public struct _RedBlackTree<Key : Comparable> {
         return Index(node: z, treeID: uuid)
     }
 
+    /// - Complexity: O(log `count`)
     public mutating func remove(i: Index) {
         let z: Node
         do {

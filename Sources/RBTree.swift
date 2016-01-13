@@ -1,5 +1,5 @@
 //
-//  RedBlackTree.swift
+//  RBTree.swift
 //  SwiftDataStructures
 //
 //  The MIT License (MIT)
@@ -25,11 +25,11 @@
 //  SOFTWARE.
 //
 
-private final class _RedBlackTreeNode<Key> : NonObjectiveCBase {
+private final class _RBTreeNode<Key> : NonObjectiveCBase {
 
     var red = true
-    var left, right: _RedBlackTreeNode!
-    weak var parent: _RedBlackTreeNode!
+    var left, right: _RBTreeNode!
+    weak var parent: _RBTreeNode!
     let key: Key!
 
     init(sentinel: ()) {
@@ -38,19 +38,19 @@ private final class _RedBlackTreeNode<Key> : NonObjectiveCBase {
         super.init()
     }
 
-    init(key: Key, sentinel: _RedBlackTreeNode) {
+    init(key: Key, sentinel: _RBTreeNode) {
         self.key = key
         assert(sentinel.isSentinel)
         left = sentinel; right = sentinel; parent = sentinel
     }
 
-    init(deepCopy node: _RedBlackTreeNode, sentinel: _RedBlackTreeNode, setParent: _RedBlackTreeNode? = nil) {
+    init(deepCopy node: _RBTreeNode, sentinel: _RBTreeNode, setParent: _RBTreeNode? = nil) {
         key = node.key
         red = node.red
         parent = setParent ?? sentinel
         super.init()
-        left = node.left.isSentinel ? sentinel : _RedBlackTreeNode(deepCopy: node.left, sentinel: sentinel, setParent: self)
-        right = node.right.isSentinel ? sentinel : _RedBlackTreeNode(deepCopy: node.right, sentinel: sentinel, setParent: self)
+        left = node.left.isSentinel ? sentinel : _RBTreeNode(deepCopy: node.left, sentinel: sentinel, setParent: self)
+        right = node.right.isSentinel ? sentinel : _RBTreeNode(deepCopy: node.right, sentinel: sentinel, setParent: self)
     }
 
     var isSentinel: Bool {
@@ -59,7 +59,7 @@ private final class _RedBlackTreeNode<Key> : NonObjectiveCBase {
 
     /// Check whether the subtree (including `self`) includes `other`.
     /// - Complexity: O(log count)
-    func contains(other: _RedBlackTreeNode) -> Bool {
+    func contains(other: _RBTreeNode) -> Bool {
         assert(!other.isSentinel)
         var x = other
         while !x.isSentinel && x != self { x = x.parent }
@@ -67,7 +67,7 @@ private final class _RedBlackTreeNode<Key> : NonObjectiveCBase {
     }
 
     /// - Complexity: O(log count)
-    func subtreeMin() -> _RedBlackTreeNode {
+    func subtreeMin() -> _RBTreeNode {
         guard !self.isSentinel else { return self }
         var x = self
         while !x.left.isSentinel { x = x.left }
@@ -76,7 +76,7 @@ private final class _RedBlackTreeNode<Key> : NonObjectiveCBase {
     }
 
     /// - Complexity: O(log count)
-    func subtreeMax() -> _RedBlackTreeNode {
+    func subtreeMax() -> _RBTreeNode {
         guard !self.isSentinel else { return self }
         var x = self
         while !x.right.isSentinel { x = x.right }
@@ -85,7 +85,7 @@ private final class _RedBlackTreeNode<Key> : NonObjectiveCBase {
     }
 
     /// - Complexity: Amortised O(1)
-    func successor() -> _RedBlackTreeNode? {
+    func successor() -> _RBTreeNode? {
         if isSentinel { return nil }
         // if the right subtree exists, the successor is the smallest item in it
         if !right.isSentinel { return right.subtreeMin() }
@@ -96,7 +96,7 @@ private final class _RedBlackTreeNode<Key> : NonObjectiveCBase {
     }
 
     /// - Complexity: Amortised O(1)
-    func predecessor() -> _RedBlackTreeNode? {
+    func predecessor() -> _RBTreeNode? {
         if isSentinel { return nil }
         // if the left subtree exists, the predecessor is the largest item in it
         if !left.isSentinel { return left.subtreeMax() }
@@ -109,30 +109,30 @@ private final class _RedBlackTreeNode<Key> : NonObjectiveCBase {
 }
 
 @transparent
-private func ==<Key>(lhs: _RedBlackTreeNode<Key>, rhs: _RedBlackTreeNode<Key>) -> Bool {
+private func ==<Key>(lhs: _RBTreeNode<Key>, rhs: _RBTreeNode<Key>) -> Bool {
     return lhs === rhs
 }
 
-extension _RedBlackTreeNode : Equatable { }
+extension _RBTreeNode : Equatable { }
 
 private struct Unowned<Value : AnyObject> {
     unowned var value: Value
     init(_ value: Value) { self.value = value }
 }
 
-private enum _RedBlackTreeIndexKind<Key> {
-    case Node(Unowned<_RedBlackTreeNode<Key>>)
-    case End(last: Unowned<_RedBlackTreeNode<Key>>)
+private enum _RBTreeIndexKind<Key> {
+    case Node(Unowned<_RBTreeNode<Key>>)
+    case End(last: Unowned<_RBTreeNode<Key>>)
     case Empty
 }
 
 // TODO: store strong references to nodes and a storage wrapper class; find a scheme to avoid index invalidation upon modification (until the referred element is removed)
 
-/// Used to access elements of a `_RedBlackTree<Key>`.
-public struct _RedBlackTreeIndex<Key> : BidirectionalIndexType {
+/// Used to access elements of a `_RBTree<Key>`.
+public struct _RBTreeIndex<Key> : BidirectionalIndexType {
 
-    private typealias Node = _RedBlackTreeNode<Key>
-    private typealias Kind = _RedBlackTreeIndexKind<Key>
+    private typealias Node = _RBTreeNode<Key>
+    private typealias Kind = _RBTreeIndexKind<Key>
 
     private let kind: Kind
 
@@ -150,11 +150,11 @@ public struct _RedBlackTreeIndex<Key> : BidirectionalIndexType {
     }
 
     /// - Complexity: Amortised O(1)
-    public func successor() -> _RedBlackTreeIndex {
+    public func successor() -> _RBTreeIndex {
         switch kind {
         case .Node(let u):
-            guard let suc = u.value.successor() else { return _RedBlackTreeIndex(end: u) }
-            return _RedBlackTreeIndex(node: suc)
+            guard let suc = u.value.successor() else { return _RBTreeIndex(end: u) }
+            return _RBTreeIndex(node: suc)
         case .End(_): fallthrough
         case .Empty:
             preconditionFailure("Cannot get successor of the end index.")
@@ -162,13 +162,13 @@ public struct _RedBlackTreeIndex<Key> : BidirectionalIndexType {
     }
 
     /// - Complexity: Amortised O(1)
-    public func predecessor() -> _RedBlackTreeIndex {
+    public func predecessor() -> _RBTreeIndex {
         switch kind {
         case .Node(let u):
             guard let pre = u.value.predecessor() else { preconditionFailure("Cannot get predecessor of the start index.") }
-            return _RedBlackTreeIndex(node: pre)
+            return _RBTreeIndex(node: pre)
         case .End(last: let u):
-            return _RedBlackTreeIndex(node: u)
+            return _RBTreeIndex(node: u)
         case .Empty:
             preconditionFailure("Cannot get predecessor of the start index.")
         }
@@ -187,7 +187,7 @@ public struct _RedBlackTreeIndex<Key> : BidirectionalIndexType {
 
 }
 
-public func ==<Key>(lhs: _RedBlackTreeIndex<Key>, rhs: _RedBlackTreeIndex<Key>) -> Bool {
+public func ==<Key>(lhs: _RBTreeIndex<Key>, rhs: _RBTreeIndex<Key>) -> Bool {
     switch (lhs.kind, rhs.kind) {
     case (.Node(let a), .Node(let b)): return a.value === b.value
     case (.End(let a), .End(let b)): return a.value === b.value
@@ -212,9 +212,9 @@ public func ==<Key>(lhs: _RedBlackTreeIndex<Key>, rhs: _RedBlackTreeIndex<Key>) 
 /// **Index validity note**: Indexes are invalidated upon *any* modification to the data structure. Attempting to access them afterwards, or using their member functions, may result in a crash or undefined behaviour.
 ///
 /// No runtime validity checks are performed when subscripting or removing indexes from a tree due to the overhead of implementing such checks. Using indexes from a different tree will result in undefined behaviour.
-public struct _RedBlackTree<Key : Comparable> {
+public struct _RBTree<Key : Comparable> {
 
-    private typealias Node = _RedBlackTreeNode<Key>
+    private typealias Node = _RBTreeNode<Key>
 
     private var sentinel = Node(sentinel: ())
     private var root: Node
@@ -227,7 +227,7 @@ public struct _RedBlackTree<Key : Comparable> {
     private mutating func ensureUnique() {
         if _slowPath(root != sentinel && !isUniquelyReferenced(&root)) {
             sentinel = Node(sentinel: ())
-            root = _RedBlackTreeNode(deepCopy: root, sentinel: sentinel)
+            root = _RBTreeNode(deepCopy: root, sentinel: sentinel)
             firstNode = root.subtreeMin()
             lastNode = root.subtreeMax()
         }
@@ -524,7 +524,7 @@ public struct _RedBlackTree<Key : Comparable> {
 
 }
 
-extension _RedBlackTree {
+extension _RBTree {
 
     /// Return the index of the first element *not less* than `k`, or `endIndex` if not found.
     /// - Complexity: O(log `count`)
@@ -566,9 +566,9 @@ extension _RedBlackTree {
 
 }
 
-extension _RedBlackTree : CollectionType {
+extension _RBTree : CollectionType {
 
-    public typealias Index = _RedBlackTreeIndex<Key>
+    public typealias Index = _RBTreeIndex<Key>
 
     /// - Complexity: O(1)
     public var startIndex: Index {
@@ -592,7 +592,7 @@ extension _RedBlackTree : CollectionType {
 
 }
 
-extension _RedBlackTree {
+extension _RBTree {
 
     /// - Complexity: O(1)
     public var first: Key? {
@@ -622,7 +622,7 @@ extension _RedBlackTree {
 
 }
 
-extension _RedBlackTree : ArrayLiteralConvertible {
+extension _RBTree : ArrayLiteralConvertible {
 
     public init(arrayLiteral elements: Key...) {
         self.init(elements)

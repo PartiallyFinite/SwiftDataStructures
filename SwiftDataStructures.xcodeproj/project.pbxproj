@@ -17,8 +17,8 @@
 		37D322121C43572900E2245F /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322101C43572900E2245F /* Heap.swift */; };
 		37D322141C439F2600E2245F /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322131C439F2600E2245F /* PriorityQueue.swift */; };
 		37D322151C439F2600E2245F /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322131C439F2600E2245F /* PriorityQueue.swift */; };
-		37D322171C43E6AF00E2245F /* RedBlackTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322161C43E6AF00E2245F /* RedBlackTree.swift */; };
-		37D322181C43E6AF00E2245F /* RedBlackTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322161C43E6AF00E2245F /* RedBlackTree.swift */; };
+		37D322171C43E6AF00E2245F /* RBTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322161C43E6AF00E2245F /* RBTree.swift */; };
+		37D322181C43E6AF00E2245F /* RBTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322161C43E6AF00E2245F /* RBTree.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,7 +51,7 @@
 		377C0C581C3906F400B1840F /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		37D322101C43572900E2245F /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
 		37D322131C439F2600E2245F /* PriorityQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PriorityQueue.swift; sourceTree = "<group>"; };
-		37D322161C43E6AF00E2245F /* RedBlackTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedBlackTree.swift; sourceTree = "<group>"; };
+		37D322161C43E6AF00E2245F /* RBTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RBTree.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,7 +116,7 @@
 				377C0C581C3906F400B1840F /* Info-iOS.plist */,
 				37D322101C43572900E2245F /* Heap.swift */,
 				37D322131C439F2600E2245F /* PriorityQueue.swift */,
-				37D322161C43E6AF00E2245F /* RedBlackTree.swift */,
+				37D322161C43E6AF00E2245F /* RBTree.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -308,7 +308,7 @@
 			files = (
 				37D322111C43572900E2245F /* Heap.swift in Sources */,
 				37D322141C439F2600E2245F /* PriorityQueue.swift in Sources */,
-				37D322171C43E6AF00E2245F /* RedBlackTree.swift in Sources */,
+				37D322171C43E6AF00E2245F /* RBTree.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,7 +326,7 @@
 			files = (
 				37D322121C43572900E2245F /* Heap.swift in Sources */,
 				37D322151C439F2600E2245F /* PriorityQueue.swift in Sources */,
-				37D322181C43E6AF00E2245F /* RedBlackTree.swift in Sources */,
+				37D322181C43E6AF00E2245F /* RBTree.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

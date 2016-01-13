@@ -239,7 +239,7 @@ public struct _RedBlackTree<Key : Comparable> {
     }
 
     // TODO: initialiser that takes a sorted sequence and constructs a tree in O(n) time
-    
+
     /// - Complexity: O(n log n), where n = `seq.count`.
     public init<S : SequenceType where S.Generator.Element == Key>(_ seq: S) {
         self.init()
@@ -617,6 +617,14 @@ extension _RedBlackTree {
     public func indexOf(element: Key) -> Index? {
         let i = lowerBound(element)
         return i._safe && self[i] == element ? i : nil
+    }
+
+}
+
+extension _RedBlackTree : ArrayLiteralConvertible {
+
+    public init(arrayLiteral elements: Key...) {
+        self.init(elements)
     }
 
 }

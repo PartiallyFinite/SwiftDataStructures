@@ -57,6 +57,15 @@ private final class _RedBlackTreeNode<Key> : NonObjectiveCBase {
         return key == nil
     }
 
+    /// Check whether the subtree (including `self`) includes `other`.
+    /// - Complexity: O(log count)
+    func contains(other: _RedBlackTreeNode) -> Bool {
+        assert(!other.isSentinel)
+        var x = other
+        while !x.isSentinel && x != self { x = x.parent }
+        return x == self
+    }
+
     /// - Complexity: O(log count)
     func subtreeMin() -> _RedBlackTreeNode {
         guard !self.isSentinel else { return self }
@@ -117,46 +126,35 @@ private enum _RedBlackTreeIndexKind<Key> {
     case Empty
 }
 
-private typealias _TreeUUID = UInt64
-private func _nextTreeID() -> _TreeUUID {
-    struct W {
-        static var counter: _TreeUUID = 0
-    }
-    return W.counter++
-}
+// TODO: store strong references to nodes and a storage wrapper class; find a scheme to avoid index invalidation upon modification (until the referred element is removed)
 
+/// Used to access elements of a `_RedBlackTree<Key>`.
 public struct _RedBlackTreeIndex<Key> : BidirectionalIndexType {
 
     private typealias Node = _RedBlackTreeNode<Key>
     private typealias Kind = _RedBlackTreeIndexKind<Key>
 
     private let kind: Kind
-    private let treeID: _TreeUUID
 
-    private init(node u: Unowned<Node>, treeID: _TreeUUID) {
-        kind = .Node(u)
-        self.treeID = treeID
-    }
-    private init(node: Node, treeID: _TreeUUID) { self.init(node: Unowned(node), treeID: treeID) }
+    private init(node u: Unowned<Node>) { kind = .Node(u) }
+    private init(node: Node) { self.init(node: Unowned(node)) }
 
-    private init(end u: Unowned<Node>, treeID: _TreeUUID) {
+    private init(end u: Unowned<Node>) {
         assert(u.value.successor() == nil, "Cannot make end index for a node that is not the end.")
         kind = .End(last: u)
-        self.treeID = treeID
     }
-    private init(end last: Node, treeID: _TreeUUID) { self.init(end: Unowned(last), treeID: treeID) }
+    private init(end last: Node) { self.init(end: Unowned(last)) }
 
-    private init(empty: (), treeID: _TreeUUID) {
+    private init(empty: ()) {
         kind = .Empty
-        self.treeID = treeID
     }
 
     /// - Complexity: Amortised O(1)
     public func successor() -> _RedBlackTreeIndex {
         switch kind {
         case .Node(let u):
-            guard let suc = u.value.successor() else { return _RedBlackTreeIndex(end: u, treeID: treeID) }
-            return _RedBlackTreeIndex(node: suc, treeID: treeID)
+            guard let suc = u.value.successor() else { return _RedBlackTreeIndex(end: u) }
+            return _RedBlackTreeIndex(node: suc)
         case .End(_): fallthrough
         case .Empty:
             preconditionFailure("Cannot get successor of the end index.")
@@ -168,9 +166,9 @@ public struct _RedBlackTreeIndex<Key> : BidirectionalIndexType {
         switch kind {
         case .Node(let u):
             guard let pre = u.value.predecessor() else { preconditionFailure("Cannot get predecessor of the start index.") }
-            return _RedBlackTreeIndex(node: pre, treeID: treeID)
+            return _RedBlackTreeIndex(node: pre)
         case .End(last: let u):
-            return _RedBlackTreeIndex(node: u, treeID: treeID)
+            return _RedBlackTreeIndex(node: u)
         case .Empty:
             preconditionFailure("Cannot get predecessor of the start index.")
         }
@@ -206,6 +204,14 @@ public func ==<Key>(lhs: _RedBlackTreeIndex<Key>, rhs: _RedBlackTreeIndex<Key>) 
  4. If a node is red, then both its children are black.
  5. For each node, all simple paths from the node to descendant leaves contain the same number of black nodes.
  */
+
+/// Implements a red-black binary tree.
+///
+/// Provides O(log `count`) insertion, search, and removal, as well as O(`count`) iteration.
+///
+/// **Index validity note**: Indexes are invalidated upon *any* modification to the data structure. Attempting to access them afterwards, or using their member functions, may result in a crash or undefined behaviour.
+///
+/// No runtime validity checks are performed when subscripting or removing indexes from a tree due to the overhead of implementing such checks. Using indexes from a different tree will result in undefined behaviour.
 public struct _RedBlackTree<Key : Comparable> {
 
     private typealias Node = _RedBlackTreeNode<Key>
@@ -213,29 +219,25 @@ public struct _RedBlackTree<Key : Comparable> {
     private var sentinel = Node(sentinel: ())
     private var root: Node
     private unowned var firstNode, lastNode: Node
-    private var uuid: _TreeUUID
 
     public private(set) var count = 0
 
     /// Copy-on-write optimisation. Return `true` if the tree was copied.
     /// - Complexity: Expected O(1), O(`count`) if the structure was copied and modified.
-    private mutating func ensureUnique() -> Bool {
+    private mutating func ensureUnique() {
         if _slowPath(root != sentinel && !isUniquelyReferenced(&root)) {
             sentinel = Node(sentinel: ())
             root = _RedBlackTreeNode(deepCopy: root, sentinel: sentinel)
             firstNode = root.subtreeMin()
             lastNode = root.subtreeMax()
-            return true
         }
         assert(root == sentinel || isUniquelyReferenced(&root))
-        return false
     }
 
     public init() {
         root = sentinel
         firstNode = sentinel
         lastNode = sentinel
-        uuid = _nextTreeID()
     }
 
     // TODO: initialiser that takes a sorted sequence and constructs a tree in O(n) time
@@ -269,8 +271,6 @@ public struct _RedBlackTree<Key : Comparable> {
     public mutating func insert(k: Key) -> Index {
         ensureUnique()
         loopSentinel()
-
-        uuid = _nextTreeID()
 
         let z = Node(key: k, sentinel: sentinel)
         do {
@@ -338,7 +338,7 @@ public struct _RedBlackTree<Key : Comparable> {
         if lastNode == sentinel || z.key >= lastNode.key { lastNode = z }
         assert(lastNode.successor() == nil)
 
-        return Index(node: z, treeID: uuid)
+        return Index(node: z)
     }
 
     /// - Complexity: O(log `count`)
@@ -346,14 +346,16 @@ public struct _RedBlackTree<Key : Comparable> {
         let z: Node
         do {
             precondition(i._safe, "Cannot remove an index that is out of range.")
-            precondition(i.treeID == uuid, "Index to remove is either invalidated or does not belong to this tree.")
 
-            let refind = ensureUnique() // call this before creating additional references to nodes
+            ensureUnique() // call this before creating additional references to nodes
 
-            var node = i.node! // get the node
+            let node = i.node! // get the node
             
-            // the index was in the previous tree, find it in this one
-            if refind {
+            /*
+            If indexes change to remain valid after modification, indexes from previous trees will need to be located in this one using similar code to this.
+            Note that if the tree has since changed, simply retracing the same path (as here) will not work.
+            // the index was in a previous tree, find it in this one
+            if !root.contains(node) {
                 // make a path of left (true) / right turns from the root
                 var path = ContiguousArray<Bool>()
                 // the other tree has a different sentinel
@@ -368,8 +370,8 @@ public struct _RedBlackTree<Key : Comparable> {
                 }
                 assert(node.key == old.key)
             }
+            */
             loopSentinel()
-            uuid = _nextTreeID()
             z = node
         }
 
@@ -540,7 +542,7 @@ extension _RedBlackTree {
         }
         assert(k <= nl.key)
         assert(nl.predecessor() == nil || nl.predecessor()!.key < k)
-        return Index(node: nl, treeID: uuid)
+        return Index(node: nl)
     }
 
     /// Return the index of the first element *greater* than `k`, or `endIndex` if not found.
@@ -559,7 +561,7 @@ extension _RedBlackTree {
         }
         assert(k < nl.key)
         assert(nl.predecessor() == nil || nl.predecessor()!.key <= k)
-        return Index(node: nl, treeID: uuid)
+        return Index(node: nl)
     }
 
 }
@@ -570,21 +572,20 @@ extension _RedBlackTree : CollectionType {
 
     /// - Complexity: O(1)
     public var startIndex: Index {
-        guard firstNode != sentinel else { assert(count == 0 && root == sentinel); return Index(empty: (), treeID: uuid) }
+        guard firstNode != sentinel else { assert(count == 0 && root == sentinel); return Index(empty: ()) }
         assert(firstNode.predecessor() == nil)
-        return Index(node: firstNode, treeID: uuid)
+        return Index(node: firstNode)
     }
 
     /// - Complexity: O(1)
     public var endIndex: Index {
-        guard lastNode != sentinel else { assert(count == 0 && root == sentinel); return Index(empty: (), treeID: uuid) }
+        guard lastNode != sentinel else { assert(count == 0 && root == sentinel); return Index(empty: ()) }
         assert(lastNode.successor() == nil)
-        return Index(end: lastNode, treeID: uuid)
+        return Index(end: lastNode)
     }
 
     /// - Complexity: O(1)
     public subscript(index: Index) -> Key {
-        precondition(index.treeID == uuid, "Subscript index is either invalidated or does not belong to this tree.")
         guard case .Node(let u) = index.kind else { preconditionFailure("Cannot subscript an out-of-bounds index.") }
         return u.value.key
     }

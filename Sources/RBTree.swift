@@ -108,7 +108,7 @@ private final class _RBTreeNode<Key> : NonObjectiveCBase {
 
 }
 
-@transparent
+@inline(__always)
 private func ==<Key>(lhs: _RBTreeNode<Key>, rhs: _RBTreeNode<Key>) -> Bool {
     return lhs === rhs
 }

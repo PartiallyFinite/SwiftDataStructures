@@ -7,6 +7,7 @@ Data structures:
 - `PriorityQueue`: a min- or max- priority queue
 - `OrderedSet`: an ordered set
 - `OrderedDictionary`: an ordered dictionary
+- `List`: doubly-linked list
 
 In alignment with Swift's standard library, all data structures are implemented as structs with copy-on-write optimisation.
 

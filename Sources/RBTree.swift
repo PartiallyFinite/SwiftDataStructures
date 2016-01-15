@@ -110,11 +110,6 @@ private func ==<Key, Value>(lhs: _RBTreeNode<Key, Value>, rhs: _RBTreeNode<Key, 
 
 extension _RBTreeNode : Equatable { }
 
-private struct Unowned<Value : AnyObject> {
-    unowned var value: Value
-    init(_ value: Value) { self.value = value }
-}
-
 private enum _RBTreeIndexKind<Key, Value> {
     case Node(Unowned<_RBTreeNode<Key, Value>>)
     case End(last: Unowned<_RBTreeNode<Key, Value>>)

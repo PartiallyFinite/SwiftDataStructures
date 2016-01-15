@@ -145,4 +145,15 @@ class SwiftDataStructuresTests: XCTestCase {
         XCTAssertEqual(a.count, 3)
     }
 
+    func testLinkedList() {
+        var a: List<Int> = [1, 2, 4, 8]
+        a.append(16)
+        XCTAssertEqual(a.count, 5)
+        var b = a
+        a.removeAtIndex(a.startIndex.advancedBy(2))
+        XCTAssert(a.elementsEqual([1, 2, 8, 16]))
+        b.insert(20, atIndex: b.startIndex.advancedBy(2))
+        XCTAssert(b.elementsEqual([1, 2, 20, 4, 8, 16]))
+    }
+
 }

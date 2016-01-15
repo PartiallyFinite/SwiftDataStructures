@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		376A4EAD1C47DA2C00081485 /* OrderedCollections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376A4EAC1C47DA2C00081485 /* OrderedCollections.swift */; };
+		376A4EAE1C47DA2C00081485 /* OrderedCollections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376A4EAC1C47DA2C00081485 /* OrderedCollections.swift */; };
 		377C0C241C39055800B1840F /* SwiftDataStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 377C0C231C39055800B1840F /* SwiftDataStructures.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		377C0C2B1C39055800B1840F /* SwiftDataStructures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377C0C201C39055800B1840F /* SwiftDataStructures.framework */; };
 		377C0C301C39055800B1840F /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C0C2F1C39055800B1840F /* Tests.swift */; };
@@ -39,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		376A4EAC1C47DA2C00081485 /* OrderedCollections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedCollections.swift; sourceTree = "<group>"; };
 		377C0C201C39055800B1840F /* SwiftDataStructures.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftDataStructures.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		377C0C231C39055800B1840F /* SwiftDataStructures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftDataStructures.h; sourceTree = "<group>"; };
 		377C0C251C39055800B1840F /* Info-Mac.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Mac.plist"; sourceTree = "<group>"; };
@@ -117,6 +120,7 @@
 				37D322101C43572900E2245F /* Heap.swift */,
 				37D322131C439F2600E2245F /* PriorityQueue.swift */,
 				37D322161C43E6AF00E2245F /* RBTree.swift */,
+				376A4EAC1C47DA2C00081485 /* OrderedCollections.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -309,6 +313,7 @@
 				37D322111C43572900E2245F /* Heap.swift in Sources */,
 				37D322141C439F2600E2245F /* PriorityQueue.swift in Sources */,
 				37D322171C43E6AF00E2245F /* RBTree.swift in Sources */,
+				376A4EAD1C47DA2C00081485 /* OrderedCollections.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,6 +332,7 @@
 				37D322121C43572900E2245F /* Heap.swift in Sources */,
 				37D322151C439F2600E2245F /* PriorityQueue.swift in Sources */,
 				37D322181C43E6AF00E2245F /* RBTree.swift in Sources */,
+				376A4EAE1C47DA2C00081485 /* OrderedCollections.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

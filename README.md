@@ -5,6 +5,8 @@ Pure Swift implementations of useful data structures absent from the standard li
 Data structures:
 
 - `PriorityQueue`: a min- or max- priority queue
+- `OrderedSet`: an ordered set
+- `OrderedDictionary`: an ordered dictionary
 
 In alignment with Swift's standard library, all data structures are implemented as structs with copy-on-write optimisation.
 

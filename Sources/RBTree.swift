@@ -31,7 +31,7 @@ private final class _RBTreeNode<Key, Value> : NonObjectiveCBase {
     var left, right: _RBTreeNode!
     weak var parent: _RBTreeNode!
     let key: Key!
-    let value: Value!
+    var value: Value!
 
     init(sentinel: ()) {
         red = false
@@ -462,6 +462,18 @@ public struct _RBTree<Key : Comparable, Value> {
         assert(lastNode.successor() == nil)
     }
 
+    /// Update the value stored at the given index, and return the previous value.
+    ///
+    /// If this is the *first* modification to the tree since creation or copying, invalidates all indices with respect to `self`.
+    ///
+    /// - Complexity: O(1).
+    public mutating func updateValue(value: Value, atIndex index: Index) -> Value {
+        precondition(index._safe, "Cannot update an index that is out of range.")
+        let v = index.node!.value
+        index.node!.value = value
+        return v
+    }
+
     /// Replace subtree `u` with subtree `v`.
     private mutating func transplant(u: Node, with v: Node) {
         if u.parent == sentinel { root = v }
@@ -526,6 +538,7 @@ extension _RBTree {
     /// Return the index of the first element with key *not less* than `k`, or `endIndex` if not found.
     ///
     /// - Complexity: O(log `count`)
+    @warn_unused_result
     public func lowerBound(k: Key) -> Index {
         // early return if the largest element is smaller
         var nl = lastNode
@@ -546,6 +559,7 @@ extension _RBTree {
     /// Return the index of the first element with key *greater* than `k`, or `endIndex` if not found.
     ///
     /// - Complexity: O(log `count`)
+    @warn_unused_result
     public func upperBound(k: Key) -> Index {
         // early return if the largest element is smaller
         var nl = lastNode
@@ -566,6 +580,7 @@ extension _RBTree {
     /// Return the index of the first element with key *equal to* `key`, or `nil` if not found.
     ///
     /// - Complexity: O(log `count`)
+    @warn_unused_result
     public func find(key: Key) -> Index? {
         let i = lowerBound(key)
         return i._safe && i.node!.key == key ? i : nil
@@ -574,6 +589,7 @@ extension _RBTree {
     /// Return whether the tree contains any elements with key `key`.
     ///
     /// - Complexity: O(log `count`)
+    @warn_unused_result
     public func contains(key: Key) -> Bool {
         return find(key) != nil
     }

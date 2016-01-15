@@ -132,4 +132,17 @@ class SwiftDataStructuresTests: XCTestCase {
         XCTAssert(b.elementsEqual([1, 4, 5].map { ($0, ()) }, isEquivalent: { $0.0 == $1.0 }))
     }
 
+    func testOrderedDictionary() {
+        var a: OrderedDictionary = [5: "hello", 6: "aoeu", -1: ""]
+        XCTAssertEqual(a[5], "hello")
+        XCTAssertEqual(a[6], "aoeu")
+        XCTAssertEqual(a[-1], "")
+        a[2] = "htns"
+        XCTAssertEqual(a[2], "htns")
+        a[5] = "bye"
+        XCTAssertEqual(a[5], "bye")
+        a.removeValueForKey(6)
+        XCTAssertEqual(a.count, 3)
+    }
+
 }

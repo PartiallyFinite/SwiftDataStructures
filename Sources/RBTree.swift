@@ -25,27 +25,31 @@
 //  SOFTWARE.
 //
 
-private final class _RBTreeNode<Key> : NonObjectiveCBase {
+private final class _RBTreeNode<Key, Value> : NonObjectiveCBase {
 
     var red = true
     var left, right: _RBTreeNode!
     weak var parent: _RBTreeNode!
     let key: Key!
+    let value: Value!
 
     init(sentinel: ()) {
         red = false
         key = nil
+        value = nil
         super.init()
     }
 
-    init(key: Key, sentinel: _RBTreeNode) {
+    init(key: Key, value: Value, sentinel: _RBTreeNode) {
         self.key = key
+        self.value = value
         assert(sentinel.isSentinel)
         left = sentinel; right = sentinel; parent = sentinel
     }
 
     init(deepCopy node: _RBTreeNode, sentinel: _RBTreeNode, setParent: _RBTreeNode? = nil) {
         key = node.key
+        value = node.value
         red = node.red
         parent = setParent ?? sentinel
         super.init()
@@ -100,7 +104,7 @@ private final class _RBTreeNode<Key> : NonObjectiveCBase {
 }
 
 @inline(__always)
-private func ==<Key>(lhs: _RBTreeNode<Key>, rhs: _RBTreeNode<Key>) -> Bool {
+private func ==<Key, Value>(lhs: _RBTreeNode<Key, Value>, rhs: _RBTreeNode<Key, Value>) -> Bool {
     return lhs === rhs
 }
 
@@ -111,17 +115,17 @@ private struct Unowned<Value : AnyObject> {
     init(_ value: Value) { self.value = value }
 }
 
-private enum _RBTreeIndexKind<Key> {
-    case Node(Unowned<_RBTreeNode<Key>>)
-    case End(last: Unowned<_RBTreeNode<Key>>)
+private enum _RBTreeIndexKind<Key, Value> {
+    case Node(Unowned<_RBTreeNode<Key, Value>>)
+    case End(last: Unowned<_RBTreeNode<Key, Value>>)
     case Empty
 }
 
-/// Used to access elements of an `_RBTree<Key>`.
-public struct _RBTreeIndex<Key> : BidirectionalIndexType {
+/// Used to access elements of an `_RBTree<Key, Value>`.
+public struct _RBTreeIndex<Key, Value> : BidirectionalIndexType {
 
-    private typealias Node = _RBTreeNode<Key>
-    private typealias Kind = _RBTreeIndexKind<Key>
+    private typealias Node = _RBTreeNode<Key, Value>
+    private typealias Kind = _RBTreeIndexKind<Key, Value>
 
     private let kind: Kind
 
@@ -177,7 +181,7 @@ public struct _RBTreeIndex<Key> : BidirectionalIndexType {
 
 }
 
-public func ==<Key>(lhs: _RBTreeIndex<Key>, rhs: _RBTreeIndex<Key>) -> Bool {
+public func ==<Key, Value>(lhs: _RBTreeIndex<Key, Value>, rhs: _RBTreeIndex<Key, Value>) -> Bool {
     switch (lhs.kind, rhs.kind) {
     case (.Node(let a), .Node(let b)): return a.value === b.value
     case (.End(let a), .End(let b)): return a.value === b.value
@@ -195,12 +199,12 @@ public func ==<Key>(lhs: _RBTreeIndex<Key>, rhs: _RBTreeIndex<Key>) -> Bool {
  5. For each node, all simple paths from the node to descendant leaves contain the same number of black nodes.
  */
 
-/// Implements a red-black binary tree.
+/// Implements a red-black binary tree: a collection of keys with associated values, ordered by key only.
 ///
 /// Provides O(log `count`) insertion, search, and removal, as well as a `CollectionType` interface.
-public struct _RBTree<Key : Comparable> {
+public struct _RBTree<Key : Comparable, Value> {
 
-    private typealias Node = _RBTreeNode<Key>
+    private typealias Node = _RBTreeNode<Key, Value>
 
     private var sentinel = Node(sentinel: ())
     private var root: Node
@@ -231,9 +235,9 @@ public struct _RBTree<Key : Comparable> {
     // TODO: initialiser that takes a sorted sequence and constructs a tree in O(n) time
 
     /// - Complexity: O(n log n), where n = `seq.count`.
-    public init<S : SequenceType where S.Generator.Element == Key>(_ seq: S) {
+    public init<S : SequenceType where S.Generator.Element == Element>(_ seq: S) {
         self.init()
-        for k in seq { insert(k) }
+        for (k, v) in seq { insert(k, with: v) }
     }
 
     private func loopSentinel() {
@@ -255,16 +259,16 @@ public struct _RBTree<Key : Comparable> {
         sentinel.parent = nil
     }
 
-    /// Insert the key `k` into the tree. Returns the index at which `k` was inserted.
+    /// Insert the key `k` into the tree with associated value `value`. Returns the index at which `k` was inserted.
     ///
     /// If this is the *first* modification to the tree since creation or copying, invalidates all indices with respect to `self`.
     ///
     /// - Complexity: O(log `count`)
-    public mutating func insert(k: Key) -> Index {
+    public mutating func insert(k: Key, with value: Value) -> Index {
         ensureUnique()
         loopSentinel()
 
-        let z = Node(key: k, sentinel: sentinel)
+        let z = Node(key: k, value: value, sentinel: sentinel)
         do {
             var y = sentinel
             var x = root
@@ -333,7 +337,7 @@ public struct _RBTree<Key : Comparable> {
         return Index(node: z)
     }
 
-    /// Remove the key at `index`.
+    /// Remove the element at `index`.
     ///
     /// If this is the *first* modification to the tree since creation or copying, invalidates all indices with respect to `self`.
     ///
@@ -519,7 +523,7 @@ public struct _RBTree<Key : Comparable> {
 
 extension _RBTree {
 
-    /// Return the index of the first element *not less* than `k`, or `endIndex` if not found.
+    /// Return the index of the first element with key *not less* than `k`, or `endIndex` if not found.
     ///
     /// - Complexity: O(log `count`)
     public func lowerBound(k: Key) -> Index {
@@ -539,7 +543,7 @@ extension _RBTree {
         return Index(node: nl)
     }
 
-    /// Return the index of the first element *greater* than `k`, or `endIndex` if not found.
+    /// Return the index of the first element with key *greater* than `k`, or `endIndex` if not found.
     ///
     /// - Complexity: O(log `count`)
     public func upperBound(k: Key) -> Index {
@@ -559,11 +563,37 @@ extension _RBTree {
         return Index(node: nl)
     }
 
+    /// Return the index of the first element with key *equal to* `key`, or `nil` if not found.
+    ///
+    /// - Complexity: O(log `count`)
+    public func find(key: Key) -> Index? {
+        let i = lowerBound(key)
+        return i._safe && i.node!.key == key ? i : nil
+    }
+
+    /// Return whether the tree contains any elements with key `key`.
+    ///
+    /// - Complexity: O(log `count`)
+    public func contains(key: Key) -> Bool {
+        return find(key) != nil
+    }
+
+    /// - Complexity: O(1)
+    public var minKey: Key? {
+        return firstNode.key ?? nil
+    }
+
+    /// - Complexity: O(1)
+    public var maxKey: Key? {
+        return lastNode.key ?? nil
+    }
+
 }
 
 extension _RBTree : CollectionType {
 
-    public typealias Index = _RBTreeIndex<Key>
+    public typealias Element = (Key, Value)
+    public typealias Index = _RBTreeIndex<Key, Value>
 
     /// - Complexity: O(1)
     public var startIndex: Index {
@@ -582,9 +612,9 @@ extension _RBTree : CollectionType {
     /// Access the key at `index`.
     ///
     /// - Complexity: O(1)
-    public subscript(index: Index) -> Key {
+    public subscript(index: Index) -> Element {
         guard case .Node(let u) = index.kind else { preconditionFailure("Cannot subscript an out-of-bounds index.") }
-        return u.value.key
+        return (u.value.key, u.value.value)
     }
 
 }
@@ -592,41 +622,20 @@ extension _RBTree : CollectionType {
 extension _RBTree {
 
     /// - Complexity: O(1)
-    public var first: Key? {
-        return firstNode.key
+    public var first: Element? {
+        return firstNode != sentinel ? (firstNode.key, firstNode.value) : nil
     }
 
     /// - Complexity: O(1)
-    public var last: Key? {
-        return lastNode.key
-    }
-
-    /// - Complexity: O(1)
-    public func maxElement() -> Key? {
-        return last
-    }
-
-    /// - Complexity: O(1)
-    public func minElement() -> Key? {
-        return first
-    }
-
-    /// - Complexity: O(log `count`)
-    public func indexOf(element: Key) -> Index? {
-        let i = lowerBound(element)
-        return i._safe && self[i] == element ? i : nil
-    }
-
-    /// - Complexity: O(log `count`)
-    public func contains(element: Key) -> Bool {
-        return indexOf(element) != nil
+    public var last: Element? {
+        return lastNode != sentinel ? (lastNode.key, lastNode.value) : nil
     }
 
 }
 
 extension _RBTree : ArrayLiteralConvertible {
 
-    public init(arrayLiteral elements: Key...) {
+    public init(arrayLiteral elements: Element...) {
         self.init(elements)
     }
 

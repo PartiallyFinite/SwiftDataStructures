@@ -57,15 +57,6 @@ private final class _RBTreeNode<Key> : NonObjectiveCBase {
         return key == nil
     }
 
-    /// Check whether the subtree (including `self`) includes `other`.
-    /// - Complexity: O(log count)
-    func contains(other: _RBTreeNode) -> Bool {
-        assert(!other.isSentinel)
-        var x = other
-        while !x.isSentinel && x != self { x = x.parent }
-        return x == self
-    }
-
     /// - Complexity: O(log count)
     func subtreeMin() -> _RBTreeNode {
         guard !self.isSentinel else { return self }
@@ -126,9 +117,7 @@ private enum _RBTreeIndexKind<Key> {
     case Empty
 }
 
-// TODO: store strong references to nodes and a storage wrapper class; find a scheme to avoid index invalidation upon modification (until the referred element is removed)
-
-/// Used to access elements of a `_RBTree<Key>`.
+/// Used to access elements of an `_RBTree<Key>`.
 public struct _RBTreeIndex<Key> : BidirectionalIndexType {
 
     private typealias Node = _RBTreeNode<Key>
@@ -180,6 +169,7 @@ public struct _RBTreeIndex<Key> : BidirectionalIndexType {
         return false
     }
 
+    /// The node the index refers to, if any.
     private var node: Node? {
         if case .Node(let u) = kind { return u.value }
         return nil
@@ -207,11 +197,7 @@ public func ==<Key>(lhs: _RBTreeIndex<Key>, rhs: _RBTreeIndex<Key>) -> Bool {
 
 /// Implements a red-black binary tree.
 ///
-/// Provides O(log `count`) insertion, search, and removal, as well as O(`count`) iteration.
-///
-/// **Index validity note**: Indexes are invalidated upon *any* modification to the data structure. Attempting to access them afterwards, or using their member functions, may result in a crash or undefined behaviour.
-///
-/// No runtime validity checks are performed when subscripting or removing indexes from a tree due to the overhead of implementing such checks. Using indexes from a different tree will result in undefined behaviour.
+/// Provides O(log `count`) insertion, search, and removal, as well as a `CollectionType` interface.
 public struct _RBTree<Key : Comparable> {
 
     private typealias Node = _RBTreeNode<Key>
@@ -224,14 +210,16 @@ public struct _RBTree<Key : Comparable> {
 
     /// Copy-on-write optimisation. Return `true` if the tree was copied.
     /// - Complexity: Expected O(1), O(`count`) if the structure was copied and modified.
-    private mutating func ensureUnique() {
+    private mutating func ensureUnique() -> Bool {
         if _slowPath(root != sentinel && !isUniquelyReferenced(&root)) {
             sentinel = Node(sentinel: ())
             root = _RBTreeNode(deepCopy: root, sentinel: sentinel)
             firstNode = root.subtreeMin()
             lastNode = root.subtreeMax()
+            return true
         }
         assert(root == sentinel || isUniquelyReferenced(&root))
+        return false
     }
 
     public init() {
@@ -267,6 +255,10 @@ public struct _RBTree<Key : Comparable> {
         sentinel.parent = nil
     }
 
+    /// Insert the key `k` into the tree. Returns the index at which `k` was inserted.
+    ///
+    /// If this is the *first* modification to the tree since creation or copying, invalidates all indices with respect to `self`.
+    ///
     /// - Complexity: O(log `count`)
     public mutating func insert(k: Key) -> Index {
         ensureUnique()
@@ -341,21 +333,23 @@ public struct _RBTree<Key : Comparable> {
         return Index(node: z)
     }
 
+    /// Remove the key at `index`.
+    ///
+    /// If this is the *first* modification to the tree since creation or copying, invalidates all indices with respect to `self`.
+    ///
     /// - Complexity: O(log `count`)
-    public mutating func remove(i: Index) {
+    public mutating func remove(index: Index) {
         let z: Node
         do {
-            precondition(i._safe, "Cannot remove an index that is out of range.")
+            precondition(index._safe, "Cannot remove an index that is out of range.")
 
-            ensureUnique() // call this before creating additional references to nodes
+            let copied = ensureUnique() // call this before creating additional references to nodes
 
-            let node = i.node! // get the node
+            var node = index.node! // get the node
             
-            /*
-            If indexes change to remain valid after modification, indexes from previous trees will need to be located in this one using similar code to this.
-            Note that if the tree has since changed, simply retracing the same path (as here) will not work.
-            // the index was in a previous tree, find it in this one
-            if !root.contains(node) {
+            // the index was in the previous tree, find it in this one
+            // the O(log `count`) complexity of this operation doesn't matter as it is equal to the complexity of the removal operation
+            if copied {
                 // make a path of left (true) / right turns from the root
                 var path = ContiguousArray<Bool>()
                 // the other tree has a different sentinel
@@ -370,7 +364,6 @@ public struct _RBTree<Key : Comparable> {
                 }
                 assert(node.key == old.key)
             }
-            */
             loopSentinel()
             z = node
         }
@@ -527,6 +520,7 @@ public struct _RBTree<Key : Comparable> {
 extension _RBTree {
 
     /// Return the index of the first element *not less* than `k`, or `endIndex` if not found.
+    ///
     /// - Complexity: O(log `count`)
     public func lowerBound(k: Key) -> Index {
         // early return if the largest element is smaller
@@ -546,6 +540,7 @@ extension _RBTree {
     }
 
     /// Return the index of the first element *greater* than `k`, or `endIndex` if not found.
+    ///
     /// - Complexity: O(log `count`)
     public func upperBound(k: Key) -> Index {
         // early return if the largest element is smaller
@@ -584,6 +579,8 @@ extension _RBTree : CollectionType {
         return Index(end: lastNode)
     }
 
+    /// Access the key at `index`.
+    ///
     /// - Complexity: O(1)
     public subscript(index: Index) -> Key {
         guard case .Node(let u) = index.kind else { preconditionFailure("Cannot subscript an out-of-bounds index.") }
@@ -618,6 +615,11 @@ extension _RBTree {
     public func indexOf(element: Key) -> Index? {
         let i = lowerBound(element)
         return i._safe && self[i] == element ? i : nil
+    }
+
+    /// - Complexity: O(log `count`)
+    public func contains(element: Key) -> Bool {
+        return indexOf(element) != nil
     }
 
 }

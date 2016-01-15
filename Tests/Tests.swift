@@ -118,4 +118,17 @@ class SwiftDataStructuresTests: XCTestCase {
         }
     }
 
+    func testRBTreeIndexing() {
+        var a: _RBTree = [1, 2, 3, 4, 5]
+        let i = a.indexOf(3)!, j = a.indexOf(2)!, k = a.indexOf(5)!
+        a.remove(i)
+        XCTAssertEqual(a[j], 2)
+        XCTAssertEqual(a[k], 5)
+        var b = a
+        XCTAssertEqual(b[j], 2)
+        XCTAssertEqual(b[k], 5)
+        b.remove(j)
+        XCTAssert(b.elementsEqual([1, 4, 5]))
+    }
+
 }

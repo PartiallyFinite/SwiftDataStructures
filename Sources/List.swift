@@ -70,6 +70,7 @@ public struct List<Element> : ArrayLiteralConvertible, CollectionType, MutableCo
     /// Create an empty list.
     public init() { }
 
+    /// - Complexity: O(n), where n is the length of `sequence`.
     public init<S : SequenceType where S.Generator.Element == Element>(_ sequence: S) {
         for v in sequence {
             append(v)
@@ -104,12 +105,16 @@ public struct List<Element> : ArrayLiteralConvertible, CollectionType, MutableCo
         return startIndex.advancedBy(offset)
     }
 
+    /// - Complexity: O(1).
     public var startIndex: Index {
         return head ?? endIndex
     }
 
+    /// - Complexity: O(1).
     public var endIndex = Index(value: nil)
 
+    /// If this is the *first* modification to the list since creation or copying, invalidates all indices with respect to `self`.
+    ///
     /// - Complexity: O(1).
     public subscript(index: Index) -> Element {
         get {
@@ -125,6 +130,11 @@ public struct List<Element> : ArrayLiteralConvertible, CollectionType, MutableCo
 
 extension List {
 
+    /// Insert `newElement` before the element at `index`.
+    ///
+    /// If this is the *first* modification to the list since creation or copying, invalidates all indices with respect to `self`.
+    ///
+    /// - Complexity: O(1).
     public mutating func insert(newElement: Element, atIndex index: Index) {
         let index = needsUnique ? uniqueTransferringIndex(index) : index
         let node = Node(value: newElement)
@@ -140,6 +150,11 @@ extension List {
         index.prev = Unowned(node)
     }
 
+    /// Remove and return the element at `index`.
+    ///
+    /// If this is the *first* modification to the list since creation or copying, invalidates all indices with respect to `self`.
+    ///
+    /// - Complexity: O(1).
     public mutating func removeAtIndex(index: Index) -> Element {
         let index = needsUnique ? uniqueTransferringIndex(index) : index
         let prev = index.prev, next = index.next
@@ -154,10 +169,20 @@ extension List {
         return index.value
     }
 
+    /// Add `newElement` to the end of the list.
+    ///
+    /// If this is the *first* modification to the list since creation or copying, invalidates all indices with respect to `self`.
+    ///
+    /// - Complexity: O(1).
     public mutating func append(newElement: Element) {
         insert(newElement, atIndex: endIndex)
     }
 
+    /// Remove and return the last element in the list.
+    ///
+    /// If this is the *first* modification to the list since creation or copying, invalidates all indices with respect to `self`.
+    ///
+    /// - Complexity: O(1).
     public mutating func removeLast() -> Element {
         return removeAtIndex(endIndex.predecessor())
     }

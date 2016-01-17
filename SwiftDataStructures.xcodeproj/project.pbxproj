@@ -13,14 +13,16 @@
 		376A4EB11C490BDD00081485 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376A4EAF1C490BDD00081485 /* List.swift */; };
 		376A4EB31C4913A900081485 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376A4EB21C4913A900081485 /* Util.swift */; };
 		376A4EB41C4913A900081485 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376A4EB21C4913A900081485 /* Util.swift */; };
-		376A4EB61C4B3B3D00081485 /* CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376A4EB51C4B3B3D00081485 /* CircularBuffer.swift */; };
-		376A4EB71C4B3B3D00081485 /* CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376A4EB51C4B3B3D00081485 /* CircularBuffer.swift */; };
+		376A4EB61C4B3B3D00081485 /* Deque.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376A4EB51C4B3B3D00081485 /* Deque.swift */; };
+		376A4EB71C4B3B3D00081485 /* Deque.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376A4EB51C4B3B3D00081485 /* Deque.swift */; };
 		377C0C241C39055800B1840F /* SwiftDataStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 377C0C231C39055800B1840F /* SwiftDataStructures.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		377C0C2B1C39055800B1840F /* SwiftDataStructures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377C0C201C39055800B1840F /* SwiftDataStructures.framework */; };
 		377C0C301C39055800B1840F /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C0C2F1C39055800B1840F /* Tests.swift */; };
 		377C0C491C39068300B1840F /* SwiftDataStructures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377C0C3F1C39068300B1840F /* SwiftDataStructures.framework */; };
 		377C0C591C39076D00B1840F /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C0C2F1C39055800B1840F /* Tests.swift */; };
 		377C0C5A1C39077000B1840F /* SwiftDataStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 377C0C231C39055800B1840F /* SwiftDataStructures.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		37C695011C4BE96E009EB76D /* Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C695001C4BE96E009EB76D /* Values.swift */; };
+		37C695021C4BE96E009EB76D /* Values.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C695001C4BE96E009EB76D /* Values.swift */; };
 		37D322111C43572900E2245F /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322101C43572900E2245F /* Heap.swift */; };
 		37D322121C43572900E2245F /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322101C43572900E2245F /* Heap.swift */; };
 		37D322141C439F2600E2245F /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D322131C439F2600E2245F /* PriorityQueue.swift */; };
@@ -50,7 +52,7 @@
 		376A4EAC1C47DA2C00081485 /* OrderedCollections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedCollections.swift; sourceTree = "<group>"; };
 		376A4EAF1C490BDD00081485 /* List.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
 		376A4EB21C4913A900081485 /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
-		376A4EB51C4B3B3D00081485 /* CircularBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularBuffer.swift; sourceTree = "<group>"; };
+		376A4EB51C4B3B3D00081485 /* Deque.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deque.swift; sourceTree = "<group>"; };
 		377C0C201C39055800B1840F /* SwiftDataStructures.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftDataStructures.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		377C0C231C39055800B1840F /* SwiftDataStructures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftDataStructures.h; sourceTree = "<group>"; };
 		377C0C251C39055800B1840F /* Info-Mac.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Mac.plist"; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 		377C0C561C3906E800B1840F /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		377C0C571C3906E800B1840F /* Info-Mac.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Mac.plist"; sourceTree = "<group>"; };
 		377C0C581C3906F400B1840F /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
+		37C695001C4BE96E009EB76D /* Values.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Values.swift; sourceTree = "<group>"; };
 		37D322101C43572900E2245F /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
 		37D322131C439F2600E2245F /* PriorityQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PriorityQueue.swift; sourceTree = "<group>"; };
 		37D322161C43E6AF00E2245F /* RBTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RBTree.swift; sourceTree = "<group>"; };
@@ -131,7 +134,7 @@
 				37D322161C43E6AF00E2245F /* RBTree.swift */,
 				376A4EAC1C47DA2C00081485 /* OrderedCollections.swift */,
 				376A4EAF1C490BDD00081485 /* List.swift */,
-				376A4EB51C4B3B3D00081485 /* CircularBuffer.swift */,
+				376A4EB51C4B3B3D00081485 /* Deque.swift */,
 				376A4EB21C4913A900081485 /* Util.swift */,
 			);
 			path = Sources;
@@ -141,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				377C0C2F1C39055800B1840F /* Tests.swift */,
+				37C695001C4BE96E009EB76D /* Values.swift */,
 				377C0C561C3906E800B1840F /* Info-iOS.plist */,
 				377C0C571C3906E800B1840F /* Info-Mac.plist */,
 			);
@@ -323,7 +327,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				37D322111C43572900E2245F /* Heap.swift in Sources */,
-				376A4EB61C4B3B3D00081485 /* CircularBuffer.swift in Sources */,
+				376A4EB61C4B3B3D00081485 /* Deque.swift in Sources */,
 				376A4EB31C4913A900081485 /* Util.swift in Sources */,
 				37D322141C439F2600E2245F /* PriorityQueue.swift in Sources */,
 				37D322171C43E6AF00E2245F /* RBTree.swift in Sources */,
@@ -337,6 +341,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				377C0C301C39055800B1840F /* Tests.swift in Sources */,
+				37C695011C4BE96E009EB76D /* Values.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,7 +350,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				37D322121C43572900E2245F /* Heap.swift in Sources */,
-				376A4EB71C4B3B3D00081485 /* CircularBuffer.swift in Sources */,
+				376A4EB71C4B3B3D00081485 /* Deque.swift in Sources */,
 				376A4EB41C4913A900081485 /* Util.swift in Sources */,
 				37D322151C439F2600E2245F /* PriorityQueue.swift in Sources */,
 				37D322181C43E6AF00E2245F /* RBTree.swift in Sources */,
@@ -359,6 +364,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				377C0C591C39076D00B1840F /* Tests.swift in Sources */,
+				37C695021C4BE96E009EB76D /* Values.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

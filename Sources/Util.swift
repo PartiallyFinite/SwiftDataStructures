@@ -32,3 +32,33 @@ internal struct Unowned<Value : AnyObject> {
     unowned var value: Value
     init(_ value: Value) { self.value = value }
 }
+
+/// Round `v` upwards to the nearest power of 2.
+internal func ceilToPowerOf2(v: Int) -> Int {
+    return Int(1 << (flsl(v - 1)))
+}
+
+internal struct CollectionSlice<Base : CollectionType> : CollectionType {
+
+    typealias Index = Base.Index
+
+    private let base: Base
+    private let bounds: Range<Index>
+
+    init(base: Base, bounds: Range<Index>) {
+        self.base = base
+        self.bounds = bounds
+    }
+
+    var startIndex: Index { return bounds.startIndex }
+    var endIndex: Index { return bounds.endIndex }
+
+    subscript(index: Index) -> Base.Generator.Element {
+        return base[index]
+    }
+
+    subscript(range: Range<Index>) -> CollectionSlice<Base> {
+        return CollectionSlice(base: base, bounds: range)
+    }
+
+}

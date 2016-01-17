@@ -15,4 +15,5 @@ Lower-level API:
 
 - `_PriorityQueueImpl`: backing class used by `PriorityQueue`
 - `_RBTree`: Red-black binary tree
+- `_CircularBuffer`: fixed-capacity circular buffer
 

@@ -25,6 +25,8 @@
 //  SOFTWARE.
 //
 
+import CoreFoundation
+
 /// Wraps an unowned value.
 ///
 /// Useful for cases when the `unowned` modifier cannot be used directly, for example `enum` associated values, and optional variables.
